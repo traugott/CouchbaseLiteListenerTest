@@ -8,6 +8,8 @@ package couchbaselistelistenertest;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.JavaContext;
 import com.couchbase.lite.Manager;
+import com.couchbase.lite.auth.Authenticator;
+import com.couchbase.lite.auth.AuthenticatorFactory;
 import com.couchbase.lite.listener.Credentials;
 import com.couchbase.lite.listener.LiteListener;
 import com.couchbase.lite.replicator.Replication;
@@ -30,6 +32,9 @@ public class MainClass {
     Manager managerClient = new Manager(new JavaContext(), Manager.DEFAULT_OPTIONS);
     Database databaseClient = managerServer.getDatabase("client");
     Replication replicator = databaseClient.createPullReplication(new URL("http://localhost:55654/server"));
+    Authenticator auth = AuthenticatorFactory.createBasicAuthenticator("user", "password");
+    replicator.setAuthenticator(auth);
+    replicator.setContinuous(true);
     replicator.start();
 
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
